@@ -1,0 +1,783 @@
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href='//fonts.googleapis.com/css?family=Philosopher' rel='stylesheet' type='text/css'>
+    <link href="//cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../isc/google-site.js" async=""></script>
+    <script type="text/javascript">var DOCS_timing={}; DOCS_timing['sl']=new Date().getTime();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="assets/image/icon.png" rel="shortcut icon" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="favicon.png" />
+    <meta name="theme-color" content="#303033" />
+    <meta name="apple-mobile-web-app-title" content="TWPay產生器">
+    <meta name="application-name" content="TWPay產生器">
+    <meta content="website" property="og:type">
+    <meta content="og.png" property="og:image" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta content="811223475559398" property="fb:app_id" />
+    <meta content="台灣Pay-共通QR產生器" property="og:title">
+    <meta content="http://i-tw.org/twpay/" property="og:url" itemprop="url">
+    <link href="//fonts.googleapis.com/css?family=Playfair%20Display%3A400%2C700%2C900%7COpen%20Sans%3A400%2C400italic%2C600%2C600italic%2C700%2C700italic%2C900%2C900italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Source+Code+Pro:400,700" rel="stylesheet" type="text/css">
+    <link href="//www.gstatic.com/_/atari/_/ss/k=atari.vw.udumXz86IMY.L.W.O/am=wA/d=1/rs=AGEqA5nqRcV8crB65ANQJgYjtzXdXEqwhA" rel="stylesheet">
+    <!--<link href="main.css?v=2.5.1" rel="stylesheet" jsname="ptDGoc">//-->
+    <title itemprop="name">台灣Pay共通性QR code產生器</title>
+
+<style>
+.alerts{
+	margin: 0px auto 20px auto;
+	padding:10px 5px 10px 30px;
+	border-width:2px;
+	border-style:solid;
+	background-repeat:no-repeat;
+	background-position:7px center;
+	color:#c81f00;
+	border-color:#ffa9a8;
+	background-color:#ffe1e1;
+	background-image:url(//i-tw.org/default/img/alert.png);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	font-size: 14px;
+	width: 100%;
+	display: ;
+	line-height: 20px;
+	-webkit-box-shadow: #777 1px 2px 3px;
+	-moz-box-shadow: #777 1px 2px 3px;
+	box-shadow: #777 1px 2px 3px;
+}
+</style><script language="javascript">
+
+//開啟iframe
+function toFrame(furl) {
+    document.getElementById('fancybox-frame1519284234140').src=furl;
+    document.getElementById('fancybox-container-24').style.display='block';
+}
+
+//關閉iframe
+function closeFB() {
+    document.getElementById('fancybox-container-24').style.display='none';
+    document.getElementById('fancybox-frame1519284234140').src="blank.html";
+}
+
+//調整FB留言寬度
+//function fb_width() {
+//    document.getElementsByTagName("iframe")[1].style.width = "100%";
+//}
+
+//帶入自動儲存帳號
+function checkSaved(a) {
+    formReset();
+    const ac_ref = localStorage.getItem('twpay_ac_'+a)
+    const showAC = JSON.parse(ac_ref);
+    if (showAC.Type == undefined) {
+        switchMode(1);
+    } else {
+        switchMode(showAC.Type);
+    }
+    if (showAC.Type == 2) {
+        document.searchbox.FeeCode.value = showAC.BankCode;
+    } else {
+        document.searchbox.BankCode.value = showAC.BankCode;
+    }
+    document.searchbox.AccNo.value = showAC.AccNo;
+    document.searchbox.Amount.value = showAC.Amount;
+    document.searchbox.Memo.value = showAC.Memo;
+    //}
+}
+
+//表單重設
+function formReset() {
+    document.forms[0].reset();
+    document.getElementById('QRC').value = "";
+    document.getElementById('ShowQR').src = "blank_old.png";
+    document.getElementById('bb').href = "#";
+    document.getElementById('bb').target = "_self";
+    document.getElementById('upperText').innerHTML = "";
+    document.getElementById('lowerText').innerHTML = "<font color='white'><B>本網站由語云資訊提供代管服務</B></font>";
+    if (self.innerWidth >= 992 && 1==2) {
+        grecaptcha.reset();
+    }
+}
+
+//變更模式
+function switchMode(Tval) {
+    document.getElementById('type1').style="";
+    document.getElementById('type2').style="";
+    //document.getElementById('type4').style="";
+    typeId = "type"+Tval;
+    document.searchbox.QRtype.value = Tval;
+
+    if (Tval != 3) {
+        document.getElementById(typeId).style="text-decoration: none; color: gray; font-weight: bold;";
+    }
+    
+    if (Tval == 1) {
+       document.getElementById('typeName').innerHTML="一般轉帳模式";
+       document.searchbox.FeeCode.value = "";
+       document.getElementById('enterFee').style.display = "none";
+       document.getElementById('enterBank').style.display = "block";
+       document.getElementById('enterAmount').style.display = "block";
+       document.getElementById('AmountDes').style.display = "block";
+       document.getElementById('AmountName').innerHTML = "轉帳金額：";
+       document.getElementById('ItemName').innerHTML = "收款帳號：";
+       document.getElementById('enterMemo').style.display = "block";
+       document.searchbox.AccNo.type = "number";
+       document.getElementById('otherServices').style.display = "none";
+       document.getElementById('enterItem').style.display = "block";
+       document.getElementById('enterSunny').style.display = "none";
+    } else if (Tval == 2) {
+       document.getElementById('typeName').innerHTML="繳費模式";
+       document.getElementById('enterFee').style.display = "block";
+       document.searchbox.BankCode.value = "";
+       document.getElementById('enterBank').style.display = "none";
+       document.getElementById('enterAmount').style.display = "block";
+       document.getElementById('AmountDes').style.display = "none";
+       document.getElementById('AmountName').innerHTML = "繳費金額：";
+       document.getElementById('ItemName').innerHTML = "銷帳編號：";
+       document.getElementById('enterMemo').style.display = "block";
+       document.searchbox.AccNo.type = "text";
+       document.getElementById('otherServices').style.display = "none";
+       //alert('【重要公告】\n本功能僅供遺失帳單時使用，請如實填寫繳費資料。\n若有自行竄改帳單條碼或金額者，請自負可能偽造文書之法律責任。\n本站僅提供條碼產製之功能，供一般人輸入正確資料之正常合法使用。\n使用者在送出交易前可於銀行APP畫面再次確認交易內容。\n若有爭議，本站及其作者概不負任何法律責任。');
+       //alert('=======繳費注意事項======= \n1. 繳費功能屬於B2C金流，手續費由收費單位制定，且不適用小額轉帳免手續費優惠！ \n\n2. 帳單進行拆單繳費，雖可以成功完成交易，但不一定可以銷帳；部份帳單須金額相符才能入帳，請您先向收費單位確認。 \n\n3. 台水帳單請輸入不包括 "-" 字的水號，共11位英數字。同一水號每天限繳費一次，重複繳費將無法入帳。');
+       document.getElementById('enterItem').style.display = "block";
+       document.getElementById('enterSunny').style.display = "none";
+    } else if (Tval == 3) {
+       document.getElementById('typeName').innerHTML="t-wallet 模式";
+       document.searchbox.FeeCode.value = "";
+       document.getElementById('enterFee').style.display = "none";
+       document.getElementById('enterBank').style.display = "";
+       document.searchbox.Amount.value = "";
+       document.getElementById('enterAmount').style.display = "none";
+       document.getElementById('ItemName').innerHTML = "收款帳號：";
+       document.getElementById('enterMemo').style.display = "block";
+       document.searchbox.AccNo.type = "number";
+       document.getElementById('otherServices').style.display = "none";
+       document.getElementById('enterItem').style.display = "block";
+       document.getElementById('enterSunny').style.display = "none";
+    } else {
+       document.getElementById('typeName').innerHTML="其他產品";
+       document.searchbox.FeeCode.value = "";
+       document.getElementById('enterFee').style.display = "none";
+       document.getElementById('enterBank').style.display = "none";
+       document.getElementById('enterAmount').style.display = "none";
+       document.getElementById('enterMemo').style.display = "none";
+       document.searchbox.AccNo.type = "number";
+       document.getElementById('otherServices').style.display = "block";
+       document.getElementById('enterItem').style.display = "none";
+       document.getElementById('enterSunny').style.display = "none";
+    }
+}
+
+//額外繳費說明
+function feeCheck() {
+    if (document.searchbox.FeeCode.value.substring(4,8) == '004C') {
+        if(confirm('中華電信繳費處於【測試階段】，不一定能入帳，請自行斟酌使用！\n\n銷帳編號取得方式請參考PTT 鄉民 aiyowaya 在 Bank_Service 板的說明。\n\n按確定前往該說明網頁，按取消留在此頁面！')) {
+        window.open('https://www.ptt.cc/bbs/Bank_Service/M.1586339056.A.44F.html', "_blank")
+        }
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '0041') {
+        alert('請輸入「銷帳編號」（而非「繳款單編號」）！');
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '0061') {
+        alert('台水請輸入水號英數字共11碼。請勿輸入「北水」帳單！');
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '007A') {
+        alert('一銀信用卡繳款，可輸入「卡號」或「存戶編號」共16位。');
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '008A') {
+        alert('華南信用卡繳款，可輸入「卡號」或「繳款編號」共16位。');
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '009A') {
+        alert('彰銀信用卡繳款，請輸入帳單上的「14位數」ATM轉帳號碼（該帳號末8碼應與您身分證字號末8碼相同，請勿輸入「第二段繳款條碼」！）');
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '017T') {
+        alert('台灣之星請輸入「786000」+「帳戶編號10碼（非手機號碼）」共16位數字。');
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '103A') {
+        alert('新光卡費，一般卡請輸入「316」+「正卡持卡人身分證字號11碼（英文字母需轉換為數字：A=01、B=02、C=03依此類推）」；商務卡請輸入「316000」+「統一編號8碼」。');
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '805A') {
+        alert('遠銀卡費請輸入「529」+「正卡持卡人身分證字號11碼（英文字母需轉換為數字：A=01、B=02、C=03依此類推）」。');
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '807B') {
+        alert('永豐卡友請注意: \n\n1. 永豐已終止台灣Pay相關業務，惟部分銀行APP仍可使用此條碼繳款入帳，各銀行適用性請自行測試，若可正常掃碼則表示可以使用。\n\n2. 請輸入「信用卡卡號」或「00598+正卡持卡人身分證字號11碼（英文字母需轉換為數字：A=01、B=02、C=03依此類推）」。\n\n3. 若您名下只有「永豐美國運通卡」，將無法使用此功能繳費。（系統會顯示繳費成功，但實際上錢錢會消失，無法入帳');
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '000A') {
+        switchMode(4);toFrame('visa.html')
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '000B') {
+        switchMode(4);toFrame('ubot.html')
+    } else if (document.searchbox.FeeCode.value.substring(4,8) == '000C') {
+        switchMode(4);toFrame('cvs.html')
+    }
+}
+
+function GoQR() {
+    
+    //決定繳費類別
+    VType = document.searchbox.QRtype.value;
+    VAmount = document.searchbox.Amount.value;
+
+    if (VType == "2") {
+        VFeeValue = document.searchbox.FeeCode.value;
+        if (VFeeValue == "") {
+            alert('請選擇繳費項目！');
+            document.searchbox.FeeCode.focus();
+        } else if (VAmount == "") {
+            alert('請輸入繳費金額！');
+            document.searchbox.Amount.focus();
+        } else {
+            VBankCode = VFeeValue.substring(0,3);
+            VFeeCode = VFeeValue.substring(4,8);
+            VFeeName = VFeeValue.substring(9,VFeeValue.length);
+        }
+    } else {
+        VBankCode = document.searchbox.BankCode.value.substring(0,3);
+        if (isNaN(VBankCode) || VBankCode.length < 3) {
+            alert('銀行代碼請入 3 位數數字！');
+            document.searchbox.BankCode.focus();
+        }
+    }
+
+    //資料檢查
+    if (self.innerWidth >= 992 && 1 == 2 && document.getElementById('g-recaptcha-response').value == '') {
+        alert('為防止大量查詢導致 Google 暫停本站服務，請您先完成機器人驗證！')
+    } else if (!isNaN(VBankCode) && VBankCode.length == 3) {
+    
+        VMemo = document.searchbox.Memo.value;
+        VLimited = 0; 
+        VSave = document.searchbox.LimitedTime.value;
+        
+        //轉帳金額
+        if (VAmount == "") {
+            QString_a = "";
+            document.getElementById('lowerText').innerHTML = VMemo;
+        } else {
+            RAmount = VAmount++;
+            SAmount = RAmount--;
+            QString_a = "%26D1%3D"+SAmount+"00";
+            document.getElementById('lowerText').innerHTML = VMemo+"－金額："+SAmount;
+        }
+        
+        //備註資料
+        if (VMemo == "") {
+            QString_m = "";
+        } else {
+            RMemo = encodeURIComponent(VMemo);
+            QString_m = "%26D9%3D"+RMemo;
+        }
+        
+        if (VType == "1") {
+            VAccNo = ("0000000000000000" + document.searchbox.AccNo.value).substr(-16,16);
+            //檢查是否為陽信 Sunny Pay
+            if (VLimited == "1") {
+                //臭陽信銀不遵守QR共通標準，只能加上這個語法!
+                EString = "TWQRP%3A%2F%2F"+VBankCode+"NTTransfer%2F158%2F02%2FV1%3FD6%3D"+VAccNo+"%26D5%3D"+VBankCode+QString_a+QString_m+"%26D10%3D901";
+                QString = encodeURIComponent(EString);
+                LinkStr = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data="+QString;
+            } else {
+                QString = "TWQRP%3A%2F%2F"+VBankCode+"NTTransfer%2F158%2F02%2FV1%3FD6%3D"+VAccNo+"%26D5%3D"+VBankCode+QString_a+QString_m+"%26D10%3D901";
+                LinkStr = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data="+QString;
+            }
+        } else if (VType == "3") {
+            VAccNo = ("0000000000000000" + document.searchbox.AccNo.value).substr(-16,16);
+            //舊版 t-wallet
+            EString = VBankCode+"&"+VAccNo+"&10000U89886971602720396039";
+            QString = encodeURIComponent(EString);
+            LinkStr = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+QString;
+        } else if (VType == "2") {
+            VAccNo = document.searchbox.AccNo.value;
+            switch(VFeeCode) {
+                case "0040":
+                    PartialString="D3=AT65E2NDwehQ&D10=901&D11=00,0040040376980850178184719006041813&D15=000&D16=國民年金保險費&D12=99991231235959";
+                    Spec="Regular";
+                    break;
+                case "0041":
+                    PartialString="D3=AWV3cihi1B9q&D10=901&D11=00,0040040862840750238157236400155808&D15=000&D8=個人繳款單";
+                    Spec="NHI";
+                    break;
+                case "004C":
+                    PartialString="D3=AdAmrC93bHxt&D11=00,0040049697993350228114739400067805&D15=000&D14=5,0903,95,090325080";
+                    Spec="Regular";
+                    break;
+                case "0061":
+                    PartialString="D3=ASap8GBcaZae&D4=99991231&D8=水費帳單&D10=901&D11=00,0060065224244455005500000100161803&D14=2,FN046286,201903";
+                    Spec="Water";
+                    break;
+                case "006A":
+                    PartialString="D3=ARCD0UqJMB6l&D11=00,0060067079912831443144000100170003&D15=000";
+                    Spec="Regular";
+                    break;
+                case "007A":
+                    PartialString="D3=Ae/pdiFSI3Ke&D11=00,0070071000081770110685007600817003&D15=000";
+                    Spec="Regular";
+                    break;
+                    //&D16=第一銀行信用卡費
+                case "007G":
+                    PartialString="D3=Ac4eLFwMl5pw&D11=00,0070071000319850020560013703198805&D15=0000&D16=亞太電信";
+                    Spec="Regular";
+                    break;
+                    //&D16=亞太電信
+                case "008A":
+                    PartialString="D3=Ac98MPe0FDlt&D11=00,0080081000005803000100012800058003&D15=000";
+                    Spec="Regular";
+                    break;
+                    //&D4=99991231&D8=華銀信用卡費&D16=華銀信用卡費&D12=99991231235959&D10=901
+                case "009A":
+                    PartialString="D3=Af70SVlXU70v&D11=00,0099910000204040019001999900204003&D15=000";
+                    Spec="Regular";
+                    break;
+                    //&D16=信用卡費
+                case "017A":
+                    PartialString="D3=AQefGD3amu6l&D11=00,0170171126683296001000000100112003&D15=000";
+                    Spec="Regular";
+                    break;
+                    //&D12=29991231235959&D4=99991231
+                case "017T":
+                    PartialString="D3=AaK0ZafgvcDL&D11=00,0170171170769567001000078600956805&D15=000";
+                    Spec="Regular";
+                    break;
+                case "103A":
+                    PartialString="D3=Ac5FpKui64Zz&D11=00,1039910000104040011030999900104003";
+                    Spec="Regular";
+                    break;
+                    //&D16=新光銀行信用卡繳款－ＶＩＳＡ　ＱＲ&D10=901
+                case "805A":
+                    PartialString="D3=AfAEmVIr4NSI&D11=00,8059910000069090010001999900069003&D15=000";
+                    Spec="Regular";
+                    break;
+                    //&D12=29991231235959&D4=99991231
+                case "807A":
+                    PartialString="D3=ARoA3fZ0L+Gs&D11=00,8078072559276081058105000103400003&D15=000";
+                    Spec="Regular";
+                    break;
+                    //&D12=29991231235959&D4=99991231&D16=永豐信用卡帳單繳費
+                case "807B":
+                    PartialString="D3=ARoA3fZ0L+Gs&D11=00,8078072559276081058105000103400003&D15=000";
+                    Spec="Sinopa";
+                    break;
+            }
+            
+            URIString = "TWQRP://"+VFeeName+"/158/03/V1?"+PartialString+"&D1="+SAmount+"00&D7="+VAccNo;
+            
+            if (Spec == "Water") {
+                WString = "https://www.water.gov.tw/member_mobilesearch_act.aspx?";
+                EString = WString + encodeURIComponent(URIString);
+            } else if (Spec == "Sinopa") {
+                SString = "https://paybill.sinopac.com/CreditCard/BarcodeQueryBill/"+VAccNo+"?";
+                EString = SString + encodeURIComponent(URIString);
+            } else if (Spec == "NHI") {
+                SString = "https://cloudicweb.nhi.gov.tw/nhiapp/PayBill/pay.aspx?billtype=02&billno="+VAccNo+"&billamt="+SAmount+"?";
+                EString = SString + encodeURIComponent(URIString);
+            } else {
+                EString = encodeURIComponent(URIString);
+            }
+            
+            //檢查是否為陽信 Sunny Pay (VLimited == "0")
+            if (VType != "2") {
+                QString = EString;
+            } else {
+                //臭陽信銀不遵守QR共通標準，只能加上這個語法!
+                QString = encodeURIComponent(EString);
+            }
+            
+            LinkStr = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data="+QString;
+
+        }
+
+        //產生QR
+        document.getElementById('ShowQR').src = LinkStr;
+        document.getElementById('bb').href = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data="+QString;
+        document.getElementById('bb').target = "_blank";
+        if (VType != "2") {
+            document.getElementById('QRC').value = decodeURIComponent(QString);
+        } else {
+            document.getElementById('QRC').value = decodeURIComponent(EString);
+        }
+        document.getElementById('upperText').innerHTML = "("+VBankCode+")-"+VAccNo;
+        
+        //記憶帳號
+        if (VSave == 1) {
+            key = localStorage.getItem('twpay_key');
+            if (key <= 98) {
+                key++;
+                localStorage.setItem('twpay_key', key);
+                if (VType == 2) {
+                    const account2 = {
+                        BankCode: document.searchbox.FeeCode.value.toString(),
+                        AccNo: document.searchbox.AccNo.value.toString(),
+                        Amount: document.searchbox.Amount.value.toString(),
+                        Memo: document.searchbox.Memo.value.toString(),
+                        Type: VType.toString(),
+                    }
+                    localStorage.setItem('twpay_ac_'+key, JSON.stringify(account2));
+                } else {
+                    const account1 = {
+                        BankCode: document.searchbox.BankCode.value.toString(),
+                        AccNo: document.searchbox.AccNo.value.toString(),
+                        Amount: document.searchbox.Amount.value.toString(),
+                        Memo: document.searchbox.Memo.value.toString(),
+                        Type: VType.toString(),   
+                    }
+                    localStorage.setItem('twpay_ac_'+key, JSON.stringify(account1));
+                }
+                document.getElementById('LtdFalse').checked = true;
+                alert('帳號儲存成功！');
+            } else {
+                alert('已達儲存帳號上限（99組），故此帳號並未儲存！\n請先用「管理已儲存帳號」功能刪除其他帳號後再試一次～');
+            }
+        }
+        
+        if (self.innerWidth >= 992) {
+            //grecaptcha.reset();
+        } else {
+            window.location.href="#QRanchor";
+        }
+        
+    }
+}
+
+
+</script></head>
+
+<body onload='setTimeout(fb_width, 2000); ' jsaction="rcuQ6b:WYd;F9BhIf:uAM5ec;w047Tc:dj7Cne;wINJic:.CLIENT;gNyjzc:.CLIENT" jsmodel="gmV9qc" jscontroller="csphid"><div jsaction="rcuQ6b:WYd;l6SCDc:Pg9eo;CtzCwf:mHeCvf;J3QHMe:HI1Mdd;" jscontroller="d3CMr"><!--
+
+// Header 開始 //
+
+--><div jsname="tiN4bf"><div class="M63kCb"></div><div class="fktJzd AKpWA yMcSQd Ly6Unf G9Qloe KuNac fOU46b" jsname="UzWXSb"><header id="atIdViewHeader"><div class="BbxBP G8QRnc K5Zlne" jsaction="rcuQ6b:JdcaS;eJOBBb:JdcaS;l7cyfd:ywL4Jf;jLKRTe:ywL4Jf; keydown:Hq2uPe; wheel:Ut4Ahc;" jscontroller="b8h9xd" data-top-navigation="true">
+    
+    
+    <nav class="JzO0Vc" id="yuynLe" role="navigation" style="display: none;" jsname="ihoMLd" jsaction="transitionend:UD2r5"><a class="Zjiec" href="#"><span style="color:white;"><font face="微軟正黑體">台灣</font> Pay　<font face="微軟正黑體">共通性</font> QR code <font face="微軟正黑體">產生器</font></span></a></nav><div class="VLoccc K5Zlne QDWEj" aria-hidden="false" jsname="rtFGi" style="background: rgba(48, 48, 51, 0.8);"><div class="Pvc6xe"><div class="TlfmSc" jsname="I8J07e"><a tabindex="0" class="GAuSPc" aria-hidden="false" href="//i-tw.org/twpay/" jsname="jIujaf"><span class="QTKDff" style="color:white;"><font face="微軟正黑體">台灣 Pay 產生器 (J大產生器)</font></span></a></div></div></div></header><!--
+    
+    //Header結束//
+    
+    --><div class="UtePc RCETm" role="main" aria-hidden="false" jsaction="Jddzq: Ffcznf;rcuQ6b:WYd;" jscontroller="oVfKv"><section class="yaqOZd lQAHbd" id="h.p_YpqNvoDGjJsE"><div class="yaqOZd IFuOkc"></div><div class="mYVXT"><div tabindex="-1" class="LS81yb VICjCf"><div class="hJDwNd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c JNdkSc"><div class="oKdM2c"><div class="hJDwNd-AhqUyc-uQSCkd jXK9ad D2fZ2 OjCsFc wHaque GNzUNc" id="h.p_QSBq-Hu2jJsA"><div class="jXK9ad-SmKAyb jXK9ad-SmKAyb-c4YZDc"><div class="tyJCtd mGzaTb baZpAe"><h1 class="zfr3Q duRjpb" id="h.p_0ATasZr-jJsD" style="font-size: 2.0em;"><B><!--//在這裡輸入區塊標題//--></B></h1></div></div></div></div></div></div></div></section><!--
+    
+    //功能區開始//
+    
+    --><form method="post" name="searchbox" id="searchbox" action="javascript:GoQR()"><input type="hidden" name="QRtype" value="1"><section class="yaqOZd" id="h.p_2GEO54C8ZWB3" style="padding: 0px;"><div class="yaqOZd IFuOkc"></div><div class="mYVXT"><div tabindex="-1" class="LS81yb VICjCf"><div class="hJDwNd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c JNdkSc"><div class="oKdM2c"><div class="hJDwNd-AhqUyc-uQSCkd jXK9ad D2fZ2 OjCsFc wHaque GNzUNc" style="padding-top: 0px;" id="h.p_6LcZTDUvZWBt"><div class="jXK9ad-SmKAyb jXK9ad-SmKAyb-c4YZDc"><div class="tyJCtd mGzaTb baZpAe"><!--//大圖小圖廣告分割處，請刪除前方大圖//<div class="row"><div class="col-lg-3 col-md-2 hidden-sm hidden-xs"></div><div class="col-lg-6 col-md-8 col-sm-12 col-xs-12 no-alerts"><p class="zfr3Q" id="h.p_7BqvpxcxKKJj" align="center"><B><font size="2" face="微軟正黑體" color="black">廣　告</font></B></P><a href="https://i-tw.org/home/blog/itaiwan" target="blank"><img src="https://i-tw.org/img/10.png" width="100%" style="border:2px solid #339"></a></div><div class="col-lg-3 col-md-2 hidden-sm hidden-xs"></div></div>//大圖小圖廣告分割處，請刪除前方大圖//--><div class="hidden-lg hidden-md hidden-sm hidden-xs" style="font-family: 'Philosopher', serif; display: none;"><p class="zfr3Q" id="h.p_7BqvpxcxKKJj" align="center"><B><font size="3" face="微軟正黑體">廣　告</font></B></P><p align="center"><a href="https://momo.dm/qy6fM6" target="_blank"><img width="200px" height="200px" src="assets/image/momo.png" /></a><BR><a style="z-index: 999; position: relative; top: -35px;"><BR><font size="2">點圖辦富邦 MOMO 聯名卡，現賺 200 mo 幣！</font></a></P></div><!--
+
+    //首頁輪播圖結束//
+
+//--><div class="row"><div class="col-lg-4 col-md-4 col-sm-6 col-xs-12"><!--
+        
+        //表單開始//
+        
+        //--><p class="zfr3Q" id="h.p_7BqvpxcxKKJj" style="font-family: '微軟正黑體';"><B><font color="blue">您目前使用的是： <font color="#000099" id="typeName">一般轉帳模式</font></font></B><BR><small style="color:#770000;">切換模式為：<a href="javascript:switchMode(1);" id="type1" style="text-decoration: none; color: gray; font-weight: bold;">一般模式</a> | <a href="javascript:switchMode(2);" id="type2">繳費模式</a><!-- | <a href="javascript:switchMode(4);" id="type4">其他產品</a>//--></small></p><P class="zfr3Q" id="otherServices" style="font-family: '微軟正黑體'; display: none;"><small>— 金融條碼服務 —<BR></small><B>█ <a href="javascript:void(0);" onClick="toFrame('visa.html')"><font color="#000099" style="text-decoration: none;">VISA金融卡繳卡費網址產生器</font></a><small> (含豐錢包)</small><BR>█ <a href="javascript:void(0);" onClick="toFrame('ubot.html')"><font color="#000099" style="text-decoration: none;">LINE Pay繳卡費條碼產生器</font></a><small>(聯邦/富邦/新光)</small><BR>█ <a href="javascript:void(0);" onClick="toFrame('cvs.html')"><font color="#000099" style="text-decoration: none;">超商通用繳費條碼產生器</font></a><small> (電費不適用)</small><BR>█ <a href="https://github.com/jefflin555/twpay" target="_blank"><font color="#000099" style="text-decoration: none;">台灣 Pay QR 產生器 API</font></a><small> (另開新視窗)</small><BR>█ <a href="javascript:switchMode(3);"><font color="#999999" style="text-decoration: none;">舊版 t-wallet 條碼產生器</font></a></B><small> (已終止服務)</small><!--</B><small><BR><BR>— 新戶辦卡優惠加碼（已過期） —<BR></small><B>█ <a href="javascript:void(0);" onClick="toFrame('refer.html')"><font color="#999999" style="text-decoration: none;">聯邦新戶辦賴點卡 本站加碼首刷400元</font></a><small><BR></small>█ <a href="javascript:void(0);" onClick="toFrame('sinopac_19')"><font color="#999999" style="text-decoration: none;">永豐新戶線上辦卡 首刷三筆599送600!</font></a><small><BR></small>█ <a href="https://service.standardchartered.com.tw/Campaign/mgm/mgm/BeRecommandedPP?mgmcode=AF222FF&utm_source=mgm&utm_medium=product&utm_term=credit-cards&utm_content=url&utm_campaign=cc" target="scb"><font color="#999999" style="text-decoration: none;">渣打新戶線上辦卡 刷滿600加碼送100</font></a><small><BR></small>█ <a href="javascript:void(0);" onClick="toFrame('jkos19')"><font color="#999999" style="text-decoration: none;">台新新戶辦街口聯名卡 任刷一筆送268</font></a><small><BR></small>█ <a href="javascript:void(0);" onClick="toFrame('esun19')"><font color="#999999" style="text-decoration: none;">新戶申辦玉山Only卡 爽爽賺NT$1,300</font></a>//--></B></P><p class="zfr3Q" id="enterBank" style="font-family: '微軟正黑體';"><BR><B>銀行代碼：</B><input type="text" list="banks" name="BankCode" class="content"><datalist id="banks"><option selected value="" disabled>請輸入銀行代號</option><optgroup label="=====本國銀行、信合社=====">
+               <option value="004臺灣銀行">004臺灣銀行</option>
+               <option value="005台灣土地銀行">005台灣土地銀行</option>
+               <option value="006合作金庫商業銀行">006合作金庫商業銀行</option>
+               <option value="007第一商業銀行">007第一商業銀行</option>
+               <option value="008華南商業銀行">008華南商業銀行</option>
+               <option value="009彰化商業銀行">009彰化商業銀行</option>
+               <option value="011上海商業儲蓄銀行">011上海商業儲蓄銀行</option>
+               <option value="012台北富邦商業銀行">012台北富邦商業銀行</option>
+               <option value="013國泰世華商業銀行">013國泰世華商業銀行</option>
+               <option value="016高雄銀行">016高雄銀行</option>
+               <option value="017兆豐國際商業銀行">017兆豐國際商業銀行</option>
+               <option value="018全國農業金庫">018全國農業金庫</option>
+               <option value="021花旗（台灣）銀行">021花旗（台灣）銀行</option>
+               <option value="040中華開發金控">040中華開發金控</option>
+               <option value="048王道商業銀行">048王道商業銀行</option>
+               <option value="050台灣中小企業銀行">050台灣中小企業銀行</option>
+               <option value="052渣打國際商業銀行">052渣打國際商業銀行</option>
+               <option value="053台中商業銀行">053台中商業銀行</option>
+               <option value="054京城商業銀行">054京城商業銀行</option>
+               <option value="081滙豐（台灣）商業銀行">081滙豐（台灣）商業銀行</option>
+               <option value="101瑞興商業銀行">101瑞興商業銀行</option>
+               <option value="102華泰商業銀行">102華泰商業銀行</option>
+               <option value="103台灣新光商業銀行">103台灣新光商業銀行</option>
+               <option value="104台北市第五信用合作社">104台北市第五信用合作社</option>
+               <option value="108陽信商業銀行">108陽信商業銀行</option>
+               <option value="114基隆市第一信用合作社">114基隆市第一信用合作社</option>
+               <option value="115基隆市第二信用合作社">115基隆市第二信用合作社</option>
+               <option value="118板信商業銀行">118板信商業銀行</option>
+               <option value="119淡水第一信用合作社">119淡水第一信用合作社</option>
+               <option value="120新北市淡水信用合作社">120新北市淡水信用合作社</option>
+               <option value="124宜蘭信用合作社">124宜蘭信用合作社</option>
+               <option value="127桃園縣桃園信用合作社">127桃園縣桃園信用合作社</option>
+               <option value="130新竹第一信用合作社">130新竹第一信用合作社</option>
+               <option value="132新竹第三信用合作社">132新竹第三信用合作社</option>
+               <option value="146台中市第二信用合作社">146台中市第二信用合作社</option>
+               <option value="147三信商業銀行">147三信商業銀行</option>
+               <option value="158彰化第一信用合作社">158彰化第一信用合作社</option>
+               <option value="161彰化第五信用合作社">161彰化第五信用合作社</option>
+               <option value="162彰化第六信用合作社">162彰化第六信用合作社</option>
+               <option value="163彰化第十信用合作社">163彰化第十信用合作社</option>
+               <option value="165彰化縣鹿港信用合作社">165彰化縣鹿港信用合作社</option>
+               <option value="178嘉義市第三信用合作社">178嘉義市第三信用合作社</option>
+               <option value="188台南第三信用合作社">188台南第三信用合作社</option>
+               <option value="204高雄市第三信用合作社">204高雄市第三信用合作社</option>
+               <option value="215花蓮第一信用合作社">215花蓮第一信用合作社</option>
+               <option value="216花蓮第二信用合作社">216花蓮第二信用合作社</option>
+               <option value="222澎湖縣第一信用合作社">222澎湖縣第一信用合作社</option>
+               <option value="223澎湖縣第二信用合作社">223澎湖縣第二信用合作社</option>
+               <option value="224金門縣信用合作社">224金門縣信用合作社</option>
+               <option value="803聯邦商業銀行">803聯邦商業銀行</option>
+               <option value="805遠東國際商業銀行">805遠東國際商業銀行</option>
+               <option value="806元大商業銀行">806元大商業銀行</option>
+               <option value="807永豐商業銀行">807永豐商業銀行</option>
+               <option value="808玉山商業銀行">808玉山商業銀行</option>
+               <option value="809凱基商業銀行">809凱基商業銀行</option>
+               <option value="810星展（台灣）商業銀行">810星展（台灣）商業銀行</option>
+               <option value="812台新國際商業銀行">812台新國際商業銀行</option>
+               <option value="815日盛國際商業銀行">815日盛國際商業銀行</option>
+               <option value="816安泰商業銀行">816安泰商業銀行</option>
+               <option value="822中國信託商業銀行">822中國信託商業銀行</option>
+               <option value="823將來銀行(Next Bank)">823將來銀行(Next Bank)</option>
+               <option value="824連線商業銀行(LINE Bank)">824連線商業銀行(LINE Bank)</option>
+               <option value="826樂天國際商業銀行">826樂天國際商業銀行</option>
+	         </optgroup><optgroup label="=====郵局=====">
+               <option value="700中華郵政股份有限公司">700中華郵政股份有限公司</option>
+            </optgroup><optgroup label="=====電子支付=====">
+               <option value="388全盈支付">388全盈支付</option>
+               <option value="389全支付">389全支付</option>
+               <option value="390悠遊付">390悠遊付</option>
+               <option value="391一卡通(iPassMoney)">391一卡通(iPassMoney)</option>
+               <option value="392愛金卡(icasH Pay)">392愛金卡(icasH Pay)</option>
+               <option value="393遠鑫電(HappyGo Pay)">393遠鑫電(HappyGo Pay)</option>
+               <option value="394國際連(PCHome)">394國際連(PCHome)</option>
+               <option value="395橘子支(Gama Pay)">395橘子支(Gama Pay)</option>
+               <option value="396街口付(JKOPay)">396街口付(JKOPay)</option>
+               <option value="397歐付寶(O'Pay)">397歐付寶(O'Pay)</option>
+               <option value="398簡單付(ezPay)">398簡單付(ezPay)</option>
+	        </optgroup><optgroup label="=====信用卡發行機構=====">
+               <option value="956財團法人聯合信用卡處理中心">956財團法人聯合信用卡處理中心</option>
+               <option value="960台灣樂天信用卡股份有限公司">960台灣樂天信用卡股份有限公司</option>
+               <option value="975台灣美國運通國際">975台灣美國運通國際</option>
+               <option value="978台灣永旺信用卡股份有限公司">978台灣永旺信用卡股份有限公司</option>
+	          </optgroup><optgroup label="=====農漁會、農金中心=====">
+               <option value="512南農中心（雲林區漁會）">512南農中心（雲林區漁會）</option>
+               <option value="515南農中心（嘉義區漁會）">515南農中心（嘉義區漁會）</option>
+               <option value="517南農中心（南市區漁會）">517南農中心（南市區漁會）</option>
+               <option value="518南農中心（南縣區漁會）">518南農中心（南縣區漁會）</option>
+               <option value="519新化區農會">519新化區農會</option>
+               <option value="520南農中心（小港區漁會、高雄區漁會）">520南農中心（小港區漁會、高雄區漁會）</option>
+               <option value="521南農中心（彌陀區漁會、永安區漁會、興達港區漁會）">521南農中心（彌陀區漁會、永安區漁會、興達港區漁會）</option>
+               <option value="523南農中心（枋寮區漁會、東港區漁會、林邊區漁會）">523南農中心（枋寮區漁會、東港區漁會、林邊區漁會）</option>
+               <option value="524南農中心（新港區漁會）">524南農中心（新港區漁會）</option>
+               <option value="525南農中心（澎湖區漁會）">525南農中心（澎湖區漁會）</option>
+               <option value="526金門區漁會">526金門區漁會</option>
+               <option value="538宜蘭市農會">538宜蘭市農會</option>
+               <option value="541白河區農會">541白河區農會</option>
+               <option value="542麻豆區農會">542麻豆區農會</option>
+               <option value="547後壁區農會">547後壁區農會</option>
+               <option value="549下營區農會">549下營區農會</option>
+               <option value="551官田區農會">551官田區農會</option>
+               <option value="552大內區農會">552大內區農會</option>
+               <option value="556學甲區農會">556學甲區農會</option>
+               <option value="557新市區農會">557新市區農會</option>
+               <option value="558安定區農會">558安定區農會</option>
+               <option value="559山上區農會">559山上區農會</option>
+               <option value="561左鎮區農會">561左鎮區農會</option>
+               <option value="562仁德區農會">562仁德區農會</option>
+               <option value="564關廟區農會">564關廟區農會</option>
+               <option value="565龍崎區農會">565龍崎區農會</option>
+               <option value="567南化區農會">567南化區農會</option>
+               <option value="568七股區農會">568七股區農會</option>
+               <option value="570南投市農會">570南投市農會</option>
+               <option value="573埔里鎮農會">573埔里鎮農會</option>
+               <option value="574竹山鎮農會">574竹山鎮農會</option>
+               <option value="575中寮鄉農會">575中寮鄉農會</option>
+               <option value="577魚池鄉農會">577魚池鄉農會</option>
+               <option value="578水里鄉農會">578水里鄉農會</option>
+               <option value="579國姓鄉農會">579國姓鄉農會</option>
+               <option value="580鹿谷鄉農會">580鹿谷鄉農會</option>
+               <option value="581信義鄉農會">581信義鄉農會</option>
+               <option value="582仁愛鄉農會">582仁愛鄉農會</option>
+               <option value="583東山區農會">583東山區農會</option>
+               <option value="585頭城鎮農會">585頭城鎮農會</option>
+               <option value="586羅東鎮農會">586羅東鎮農會</option>
+               <option value="587礁溪鄉農會">587礁溪鄉農會</option>
+               <option value="588壯圍鄉農會">588壯圍鄉農會</option>
+               <option value="589員山鄉農會">589員山鄉農會</option>
+               <option value="596五結鄉農會">596五結鄉農會</option>
+               <option value="598蘇澳區農會">598蘇澳區農會</option>
+               <option value="599三星區農會">599三星區農會</option>
+               <option value="600農金資中心">600農金資中心</option>
+               <option value="602中華民國農會中壢信用">602中華民國農會中壢信用</option>
+               <option value="605高雄地區農會">605高雄地區農會</option>
+               <option value="607北部地區農漁會">607北部地區農漁會</option>
+               <option value="608聯資中心（桃園農、八德農、大園農、大溪農、平鎮農、新屋農、楊梅）">608聯資中心（桃園農、八德農、大園農、大溪農、平鎮農、新屋農、楊梅）</option>
+               <option value="610北農中心（竹市農、湖口農、竹東農、橫山農、竹北農）">610北農中心（竹市農、湖口農、竹東農、橫山農、竹北農）</option>
+               <option value="611後龍農會">611後龍農會</option>
+               <option value="612台中市大雅區農會">612台中市大雅區農會</option>
+               <option value="613南農中心（名間本會）">613南農中心（名間本會）</option>
+               <option value="614南農中心（永靖農、員林農、秀水農、二林農）">614南農中心（永靖農、員林農、秀水農、二林農）
+</option>
+               <option value="615基隆市農會">615基隆市農會</option>
+               <option value="616南農中心（莿桐、褒忠、崙背、古坑、二崙、四湖、西螺）">616南農中心（莿桐、褒忠、崙背、古坑、二崙、四湖、西螺）</option>
+               <option value="617南農中心（竹崎、鹿草、嘉市、民雄、溪口、梅山、義竹、東石、番路）">617南農中心（竹崎、鹿草、嘉市、民雄、溪口、梅山、義竹、東石、番路）</option>
+               <option value="618南農中心（永康、西港、六甲、善化、鹽水、北門、佳里、將軍、新營、歸仁）">618南農中心（永康、西港、六甲、善化、鹽水、北門、佳里、將軍、新營、歸仁）</option>
+               <option value="619南農中心（大社、仁武、大樹、橋頭、湖內、路竹、阿蓮、燕巢、杉林、甲仙）">619南農中心（大社、仁武、大樹、橋頭、湖內、路竹、阿蓮、燕巢、杉林、甲仙）</option>
+               <option value="620南農中心（林邊、恆春、萬丹、新園、車城、里港、枋山、麟洛、滿州）">620南農中心（林邊、恆春、萬丹、新園、車城、里港、枋山、麟洛、滿州）</option>
+               <option value="621南農中心（壽豐本會、吉安本會、新秀本會、富里本會）">621南農中心（壽豐本會、吉安本會、新秀本會、富里本會）</option>
+               <option value="622南農中心（池上、成功、長濱、關山、鹿野、東河、太麻里、台東地區）">622南農中心（池上、成功、長濱、關山、鹿野、東河、太麻里、台東地區）</option>
+               <option value="623北部地區農漁會">623北部地區農漁會</option>
+               <option value="624南農中心（澎湖縣農會）">624南農中心（澎湖縣農會）</option>
+               <option value="625台中地區農會">625台中地區農會</option>
+               <option value="627南農中心（連江縣農會）">627南農中心（連江縣農會）</option>
+               <option value="628鹿港鎮農會">628鹿港鎮農會</option>
+               <option value="629和美鎮農會">629和美鎮農會</option>
+               <option value="631溪湖鎮農會">631溪湖鎮農會</option>
+               <option value="632田中鎮農會">632田中鎮農會</option>
+               <option value="633北斗鎮農會">633北斗鎮農會</option>
+               <option value="635線西鄉農會">635線西鄉農會</option>
+               <option value="636伸港鄉農會">636伸港鄉農會</option>
+               <option value="638花壇鄉農會">638花壇鄉農會</option>
+               <option value="639大村鄉農會">639大村鄉農會</option>
+               <option value="642社頭鄉農會">642社頭鄉農會</option>
+               <option value="643二水鄉農會">643二水鄉農會</option>
+               <option value="646大城鄉農會">646大城鄉農會</option>
+               <option value="647溪州鄉農會">647溪州鄉農會</option>
+               <option value="649埔鹽鄉農會">649埔鹽鄉農會</option>
+               <option value="650福興鄉農會">650福興鄉農會</option>
+               <option value="651彰化市農會">651彰化市農會</option>
+               <option value="683北港鎮農會">683北港鎮農會</option>
+               <option value="685土庫鎮農會">685土庫鎮農會</option>
+               <option value="693雲林縣東勢鄉農會">693雲林縣東勢鄉農會</option>
+               <option value="696水林鄉農會">696水林鄉農會</option>
+               <option value="697元長鄉農會">697元長鄉農會</option>
+               <option value="698麥寮鄉農會">698麥寮鄉農會</option>
+               <option value="699林內鄉農會">699林內鄉農會</option>
+               <option value="749內埔地區農會">749內埔地區農會</option>
+               <option value="775土城區農會">775土城區農會</option>
+               <option value="776三重區農會">776三重區農會</option>
+               <option value="777中和地區農會">777中和地區農會</option>
+               <option value="778淡水區農會">778淡水區農會</option>
+               <option value="779樹林區農會">779樹林區農會</option>
+               <option value="780鶯歌區農會">780鶯歌區農會</option>
+               <option value="781三峽區農會">781三峽區農會</option>
+               <option value="785蘆洲區農會">785蘆洲區農會</option>
+               <option value="786五股區農會">786五股區農會</option>
+               <option value="787林口區農會">787林口區農會</option>
+               <option value="788泰山區農會">788泰山區農會</option>
+               <option value="789坪林區農會">789坪林區農會</option>
+               <option value="790八里區農會">790八里區農會</option>
+               <option value="791金山地區農會">791金山地區農會</option>
+               <option value="792瑞芳地區農會">792瑞芳地區農會</option>
+               <option value="793新店地區農會">793新店地區農會</option>
+               <option value="795深坑區農會">795深坑區農會</option>
+               <option value="796石碇區農會">796石碇區農會</option>
+               <option value="797平溪區農會">797平溪區農會</option>
+               <option value="798石門區農會">798石門區農會</option>
+               <option value="799三芝區農會">799三芝區農會</option>
+               <option value="860中埔鄉農會">860中埔鄉農會</option>
+               <option value="866阿里山鄉農會">866阿里山鄉農會</option>
+               <option value="868台中市東勢區農會">868台中市東勢區農會</option>
+               <option value="869清水區農會">869清水區農會</option>
+               <option value="870梧棲區農會">870梧棲區農會</option>
+               <option value="871大甲區農會">871大甲區農會</option>
+               <option value="872沙鹿區農會">872沙鹿區農會</option>
+               <option value="874霧峰區農會">874霧峰區農會</option>
+               <option value="875太平區農會">875太平區農會</option>
+               <option value="876烏日區農會">876烏日區農會</option>
+               <option value="877后里區農會">877后里區農會</option>
+               <option value="878大雅區農會">878大雅區農會</option>
+               <option value="879潭子區農會">879潭子區農會</option>
+               <option value="880石岡區農會">880石岡區農會</option>
+               <option value="881新社區農會">881新社區農會</option>
+               <option value="882大肚區農會">882大肚區農會</option>
+               <option value="883外埔區農會">883外埔區農會</option>
+               <option value="884大安區農會">884大安區農會</option>
+               <option value="885龍井區農會">885龍井區農會</option>
+               <option value="886和平區農會">886和平區農會</option>
+               <option value="891花蓮市農會">891花蓮市農會</option>
+               <option value="895瑞穗鄉農會">895瑞穗鄉農會</option>
+               <option value="896玉溪地區農會">896玉溪地區農會</option>
+               <option value="897鳳榮地區農會">897鳳榮地區農會</option>
+               <option value="898光豐地區農會">898光豐地區農會</option>
+               <option value="901板農中心（大里市農會）">901板農中心（大里市農會）</option>
+               <option value="902苗栗市農會">902苗栗市農會</option>
+               <option value="903汐止區農會">903汐止區農會</option>
+               <option value="904新北市新莊區農會">904新北市新莊區農會</option>
+               <option value="906頭份市農會">906頭份市農會</option>
+               <option value="907竹南鎮農會">907竹南鎮農會</option>
+               <option value="908通霄鎮農會">908通霄鎮農會</option>
+               <option value="909苑裡鎮農會">909苑裡鎮農會</option>
+               <option value="910桃竹區聯資中心">910桃竹區聯資中心</option>
+               <option value="912冬山鄉農會">912冬山鄉農會</option>
+               <option value="913後龍鎮農會">913後龍鎮農會</option>
+               <option value="914卓蘭鎮農會">914卓蘭鎮農會</option>
+               <option value="915西湖鄉農會">915西湖鄉農會</option>
+               <option value="916草屯鎮農會">916草屯鎮農會</option>
+               <option value="917公館鄉農會">917公館鄉農會</option>
+               <option value="918銅鑼鄉農會">918銅鑼鄉農會</option>
+               <option value="919三義鄉農會">919三義鄉農會</option>
+               <option value="920造橋鄉農會">920造橋鄉農會</option>
+               <option value="921南庄鄉農會">921南庄鄉農會</option>
+               <option value="922台南地區農會信用部">922台南地區農會信用部</option>
+               <option value="923獅潭鄉農會">923獅潭鄉農會</option>
+               <option value="924頭屋鄉農會">924頭屋鄉農會</option>
+               <option value="925三灣鄉農會">925三灣鄉農會</option>
+               <option value="926大湖地區農會">926大湖地區農會</option>
+               <option value="928板農中心（板橋市農會）">928板農中心（板橋市農會）</option>
+               <option value="929關西鎮農會">929關西鎮農會</option>
+               <option value="930新埔鎮農會">930新埔鎮農會</option>
+               <option value="931竹北市農會">931竹北市農會</option>
+               <option value="932湖口鄉農會">932湖口鄉農會</option>
+               <option value="933芎林鄉農會">933芎林鄉農會</option>
+               <option value="934寶山鄉農會">934寶山鄉農會</option>
+               <option value="935峨眉鄉農會">935峨眉鄉農會</option>
+               <option value="936北埔鄉農會">936北埔鄉農會</option>
+               <option value="937竹東地區農會">937竹東地區農會</option>
+               <option value="938橫山地區農會">938橫山地區農會</option>
+               <option value="939新豐鄉農會">939新豐鄉農會</option>
+               <option value="940新竹市農會信用部">940新竹市農會信用部</option>
+               <option value="951北農中心">951北農中心</option>
+               <option value="952南農中心">952南農中心</option>
+               <option value="953田尾鄉農會">953田尾鄉農會</option>
+               <option value="954中農中心">954中農中心</option>
+               <option value="961國軍同袍儲蓄會">961國軍同袍儲蓄會</option>
+               <option value="984北投區農會">984北投區農會</option>
+               <option value="985士林區農會">985士林區農會</option>
+               <option value="986內湖區農會">986內湖區農會</option>
+               <option value="987南港區農會">987南港區農會</option>
+               <option value="988木柵區農會">988木柵區農會</option>
+               <option value="989景美區農會">989景美區農會</option></optgroup></datalist><small><font color="red">*</font> (必填)</small></P><p class="zfr3Q" id="enterFee" style="font-family: '微軟正黑體'; display:none;"><BR><B>繳費類別：</B><select name="FeeCode" onchange="feeCheck()">
+    <option value="">請選擇費用名稱</option>
+    <optgroup label="==信用卡帳單==">
+      <option value="006,006A,合庫信用卡" style="color: blue;">006合作金庫 (免手續費)</option>
+      <option value="007,007A,信用卡費" style="color: blue;">007第一銀行 (免手續費)</option>
+      <option value="008,008A,華南銀行信用卡費" style="color: blue;">008華南銀行 (免手續費)</option>
+      <option value="009,009A,彰化銀行信用卡費" style="color: blue;">009彰化銀行 (免手續費)</option>
+      <option value="017,017A,兆豐商銀信用卡費">017兆豐商銀 (手續費:10元)</option>
+      <option value="103,103A,新光銀行信用卡繳款－ＶＩＳＡ　ＱＲ" style="color: blue;">103新光銀行 (免手續費)</option>
+      <option value="805,805A,遠東商銀信用卡繳款-VisaQRCode" style="color: blue;">805遠東商銀 (免手續費)</option><!--
+      <option value="807,807A,永豐信用卡帳單繳費" style="color: blue;">807永豐銀行 (台灣Pay專用，免手續費)</option>//-->
+      <option value="807,807B,永豐信用卡帳單繳費" style="color: blue;">807永豐銀行 (免手續費)</option>
+    </optgroup>
+    <optgroup label="==公用事業費==">
+      <option value="007,007G,電信費" style="color: blue;">亞太電信 (免手續費)</option>
+      <option value="017,017T,台灣之星電信股份有限公司" style="color: blue;">台灣之星 (免手續費)</option>
+      <option value="006,0061,台灣自來水" style="color: blue;">台灣自來水  (免手續費)</option>
+    </optgroup>
+    <optgroup label="==政府保險費==">
+      <option value="004,0041,衛生福利部中央健康保險署">健保 (手續費:3元)</option>
+      <option value="004,0040,國保">國民年金 (手續費:3元)</option><!--
+      <option value="004,004C,中華電信費" style="color: blue;">中華電信費帳單 (免手續費)</option>
+    //--></optgroup><!--
+    <optgroup label="==稅==">
+      <option disabled="disabled">中華電信、台水系統異常，暫停服務</option>
+      <option value="000,0000,使用牌照稅" disabled="disabled">使用牌照稅 [即將開放]</option>
+      <option value="000,0000,房屋稅" disabled="disabled">房屋稅 [即將開放]</option>
+    </optgroup>    <optgroup label="==特殊繳費類別==">
+      <option value="000,000A,VISA繳卡費" style="color: blue;">VISA金融卡繳卡費 (免手續費)</option>
+      <option value="000,000B,LINEPay卡費" style="color: blue;">LINE Pay 繳卡費 (免手續費)</option>
+      <option value="000,000C,超商條碼">超商通用繳費條碼產生器</option>
+    </optgroup>
+//--></select><small><font color="red">*</font> (必填)</small></P><p id="enterItem" class="zfr3Q" id="h.p_7BqvpxcxKKJj" style="font-family: '微軟正黑體';"><BR><B id="ItemName">收款帳號：</B><input placeholder="請輸入轉入帳號" name="AccNo" maxlength="16" max="9999999999999999" required type="number" min="1"><small><font color="red">*</font> (必填)</small></P><p id="enterAmount" class="zfr3Q" style="font-family: '微軟正黑體';"><BR><B id="AmountName">轉帳金額：</B><input placeholder="請輸入轉帳金額" maxlength="7" max="9999999" min="1" name="Amount" type="number" pattern="[0-9]*"><BR><small id="AmountDes" style="color:#770000;">*金額留白可讓對方自行填寫，單筆限額200萬。</small></P><p id="enterMemo" class="zfr3Q" style="font-family: '微軟正黑體';"><BR><B>備註資料：</B><input placeholder="上限19個字元" maxlength="19" name="Memo"><BR></P><P class="zfr3Q" id="enterSunny" style="font-family: '微軟正黑體'; display: none;"><small style="color:#770000;"><BR><B><font color="#000099">是否設為常用帳號？</font></B> <label for="LtdFalse"><input type="radio" name="LimitedTime" value="0" id="LtdFalse" style="width: 15px; height: 15px;" checked /> 否</label>　<label for="LtdTrue"><input type="radio" name="LimitedTime" value="1" id="LtdTrue" style="width: 15px; height: 15px;" /> 是</label> (<a onclick="javascript:toFrame('saved.html')">管理常用帳號</a>)<!--*各轉出入行是否支援備註功能請依銀行公告為準。//--></P>
+</div><div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="font-family: 'Philosopher', serif;"><P style="width: 100%;" class="zfr3Q" id="h.p_7BqvpxcxKKJj"><div style="float: left;"><B><font size="3" color="black" face="微軟正黑體">請詳閱注意事項：</font></B></div></P><P><small>
+    </small><BR><ol><li><font color="red">本服務需搭配「台灣Pay」或支援銀行之APP使用。</font></li><li>本服務之QR Code由Google API產生，本站不保證該條碼之正確性，請您於轉帳前務必確認資料正確無誤。</li><li>若因使用本服務導致任何財務損失，本站概不負任何法律責任。</li><li>跨行轉帳手續費減免優惠辦法及期限，悉依各銀行公告為準。</li><li>本站不會紀錄您提供的帳號資料，敬請放心使用。</li><li style="display:none;">感謝TZUYIC、iamchief、bobwalkerkao及【<a href="https://www.ewdna.com/" target="_blank">符碼記憶</a>】協助!</li></ol></P>
+<div name="hide_verification" class="hidden-xs" align="center" style="width: 100%"><!--<div class="g-recaptcha" data-sitekey="6LcwAzIUAAAAAOFyW5G7nHdHN0ST0uu2PE_N41yQ" data-theme="light"></div>//--></div><p align="center"><input type="submit" class="button" value="產生QR Code" id="QRanchor"> <input type="button" value="清除資料" style="width:100px;" onClick="formReset()" class="hidden-xs"></p></div><div class="col-lg-4 col-md-4 col-sm-12 col-xs-12" style="font-family: 'Philosopher', serif;"><p class="zfr3Q" id="h.p_7BqvpxcxKKJj" align="center" style="padding: 0;"><B><font size="3" face="微軟正黑體">QR Code產生區</font></B> (點圖放大)</P><p align="center"><a id="upperText" style="z-index: 999; position: relative;"></a><BR><a id="bb" href="#" target="_blank"><img name="ShowQR" id="ShowQR" width="200px" height="200px" src="cube.png" /></a><BR><a id="lowerText" style="z-index: 999; position: relative;" href="#"><BR><font size="2">尚未生成QR Code！</font></a></P></div></div></div></div></div></div></div></div></div></section></form></div><div class="Xpil1b"></div><!--
+
+// Footer開始 //
+
+--><footer class="BCtCv" jsaction="rcuQ6b:WYd;" jscontroller="BYGbod" data-create-site-url="" style="margin-top: 0px; background-color: #333333; border-top: 0px;"><!--
+
+// 底部裝飾圖 //
+
+--><section style="height: 1px;" class="yaqOZd LB7kq cJgDec tpmmCb O13XJf SBrW1" id="h.p_0bPgXg34bw36"><div class="Nu95r"><div class="yaqOZd IFuOkc" style="background-position: center; transform: translate3d(0px, 0px, 0px); background-size: cover; height: 1px;" jsname="LQX2Vd"></div></div><div class="mYVXT"><div tabindex="-1" class="LS81yb VICjCf"><div class="hJDwNd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c JNdkSc"><div class="oKdM2c"><div class="hJDwNd-AhqUyc-ibL1re jXK9ad D2fZ2 OjCsFc wHaque L6cTce-purZT L6cTce-pSzOP"><div class="jXK9ad-SmKAyb jXK9ad-SmKAyb-c4YZDc"><div class="tyJCtd baZpAe"></div></div></div><div class="hJDwNd-AhqUyc-OiUrBf jXK9ad D2fZ2 OjCsFc wHaque GNzUNc" id="h.p_dkDNRVvRbw3_"><div class="jXK9ad-SmKAyb jXK9ad-SmKAyb-c4YZDc"><div class="tyJCtd mGzaTb baZpAe lkHyyc"><h2 class="zfr3Q duRjpb" id="h.p_oQc4mEa8bw4I" style="text-align: center; font-size: 2.0em;"><B><font color="#DDDDDD">QR編碼內容顯示框</B><BR><small>(點一下可複製編碼內容)</small><BR><input id="QRC" style="width:100%; background:transparent; border:none; text-align:center; font-size: 0.65em; color:#FF9999; font-weight: lighter; font-family: sans-serif;" value="" onClick="this.select(); document.execCommand('copy'); alert('已經複製編碼內容~');" readonly /><BR><B>謹慎理財 信用至上</B></font></h2></div></div></div><div class="hJDwNd-AhqUyc-ibL1re jXK9ad D2fZ2 OjCsFc wHaque L6cTce-purZT L6cTce-pSzOP"><div class="jXK9ad-SmKAyb jXK9ad-SmKAyb-c4YZDc"><div class="tyJCtd baZpAe"></div></div></div></div></div></div></div></section><!--
+
+// 版權資訊 //
+
+-->
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="../isc/2017/js/bootstrap.js"></script>
+    <script src="../isc/2017/js/wow.js"></script>
+    <script>
+      new WOW().init();
+    </script>
+</body></html>
