@@ -312,6 +312,11 @@ function GoQR() {
                     Spec="Regular";
                     break;
                     //&D4=99991231&D8=華銀信用卡費&D16=華銀信用卡費&D12=99991231235959&D10=901
+                case "008B":
+                    PartialString="D3=Ac98MPe0FDlt&D11=00,0080081000005803000100012800058003&D15=000";
+                    Spec="Regular";
+                    break;
+                    //&D4=99991231&D8=華銀信用卡費&D16=華銀信用卡費&D12=99991231235959&D10=901
                 case "009A":
                     PartialString="D3=Af70SVlXU70v&D11=00,0099910000204040019001999900204003&D15=000";
                     Spec="Regular";
@@ -735,6 +740,7 @@ function GoQR() {
       <option value="805,805A,遠東商銀信用卡繳款-VisaQRCode" style="color: blue;">805遠東商銀 (免手續費)</option><!--
       <option value="807,807A,永豐信用卡帳單繳費" style="color: blue;">807永豐銀行 (台灣Pay專用，免手續費)</option>//-->
       <option value="807,807B,永豐信用卡帳單繳費" style="color: blue;">807永豐銀行 (手續費:10元)</option>
+      <option value="008,008B,台灣樂天信用卡費" style="color: blue;">960樂天信用卡 (免手續費)</option>
     </optgroup>
     <optgroup label="==公用事業費==">
       <option value="007,007G,電信費" style="color: blue;">亞太電信 (已併入遠傳)</option>
